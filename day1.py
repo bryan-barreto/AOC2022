@@ -1,4 +1,4 @@
-list = open("day1.txt").read().split("\n\n")
+list = open("problems/day1.txt").read().split("\n\n")
 total_list = []
 
 for x in list:
