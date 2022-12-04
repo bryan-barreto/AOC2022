@@ -36,7 +36,7 @@ def part_1():
     total = 0
     for x in list:
         total = variable_to_total(find_common(x), total)        
-    print(total)
+    print("Part 1:\t" + str(total))
     
 def part_2():
     total = 0
@@ -46,7 +46,7 @@ def part_2():
         group.append(list.pop(0))
         group.append(list.pop(0))
         total = variable_to_total(group_common(group), total)
-    print(total)
+    print("Part 2:\t" + str(total))
     
     
 part_1()
