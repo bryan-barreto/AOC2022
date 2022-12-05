@@ -19,6 +19,7 @@ for x in list:
         is_first_elf = False
     if elf_1.__contains__(elf_2) or elf_2.__contains__(elf_1): 
         counter += 1
+    print(elf_1 + "\n" + elf_2)
     
 print(counter)
 
@@ -51,7 +52,7 @@ for x in list:
                 elf_2.append(small_range)
             small_range += 1
         is_first_elf = False
-    
+        
     if len(elf_1) > len(elf_2):
         counter += elf_test(elf_1, elf_2)
     else:
