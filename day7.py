@@ -16,7 +16,7 @@ def get_dir(directory):
         directory += y
     return directory
     
-def part1():
+def create_db():
     x = list.pop(0)
     command = x.split()
     if command[0] == "$":
@@ -38,35 +38,40 @@ def part1():
         directory = get_dir(current_dir)
         filelist.append(Resource(directory, "file", file, size))
 
+def part1():
+    final_count = 0
 
-dir_total = 0
+    for x in filelist:
+        for y in filelist:
+            if (x.parent + x.name + "/") == y.parent:
+                x.size += y.size
+            
+    for x in filelist:
+        if x.type == "dir" and x.size <= 100000:
+            final_count += x.size
+    print("Part 1:\t" + str(final_count))
+
+
+def part2():
+    final_count = 70000000
+    system_size = 0
+    
+    for x in filelist:
+        if x.type =="file":
+            system_size += x.size
+        
+    for x in filelist:
+        for y in filelist:
+            if (x.parent + x.name + "/") == y.parent:
+                test = (system_size - x.size)
+                if test < 40000000 and test > (system_size - final_count):
+                    final_count = x.size
+    print("Part 2:\t" + str(final_count))
+
 current_dir = []
 filelist = []
-final_count = 0
 while len(list) > 0:
-    part1()
+        create_db()
 filelist.reverse()
-for x in filelist:
-    for y in filelist:
-        if (x.parent + x.name + "/") == y.parent:
-            x.size += y.size
-        
-for x in filelist:
-    if x.type == "dir" and x.size <= 100000:
-        final_count += x.size
-print("Part 1:\t" + str(final_count))
-
-final_count = 70000000
-system_size = 0
-for x in filelist:
-    if x.type =="file":
-        system_size += x.size
-
-       
-for x in filelist:
-    for y in filelist:
-        if (x.parent + x.name + "/") == y.parent:
-            test = (system_size - x.size)
-            if test < 40000000 and test > (system_size - final_count):
-                final_count = x.size
-print("Part 2:\t" + str(final_count))
+part1()
+part2()
