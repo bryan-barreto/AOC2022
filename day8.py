@@ -107,13 +107,13 @@ while pos_y < len(grid_input):
 for y in range(0, len(grid_input)):
     for x in range(0, len(grid_input[0])):
         if check_visible(x,y):
-            print("　", end="")
+            print("　", end=" ")
         elif (x,y) == best_loc:
-            print("🎅", end="")
+            print("🎅", end=" ")
         else:
-            print("🎄", end="")
+            print("🎄", end=" ")
     print("")
 
-print((len(grid_input) * len(grid_input[0])) - invisible)    
+print("Part 1:\t" + str((len(grid_input) * len(grid_input[0])) - invisible))    
 #print(grid_input[best_loc[0]][best_loc[1]]) #best view location
-print(best_view)
+print("Part 2:\t" + str(best_view))
