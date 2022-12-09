@@ -1,6 +1,6 @@
 import math
 
-h_move_list = open("problems/day9ex2.txt").read().split("\n")
+h_move_list = open("problems/day9.txt").read().split("\n")
 
 def follow_tail(snake_len):
     h = (0,0)
@@ -25,12 +25,13 @@ def follow_tail(snake_len):
                 h = (h[0],h[1]- h_dis)
 
         not_caught = snake_len
-        while not_caught > 0:
-            test = h
-            t = snake[snake_len - not_caught][len(snake[snake_len - not_caught])-1]
+        test = h
+        front = h
+        counter = 0
+        while not_caught > 0:  
+            t = snake[counter][len(snake[counter])-1]
             dis = math.sqrt((test[0]-t[0])*(test[0]-t[0]) + (test[1]-t[1])*(test[1]-t[1]))
-            counter = 0
-            while counter < not_caught:
+            if dis > math.sqrt(2):
                 if test[0]> t[0]:
                     t = (t[0] + 1,t[1])
                 if test[0]< t[0]:
@@ -45,11 +46,21 @@ def follow_tail(snake_len):
                     hold = snake[counter][snake[counter].index(t)]
                     snake[counter][snake[counter].index(t)] = snake[counter][len(snake[counter])-1]
                     snake[counter][len(snake[counter])-1] = hold
-                dis = math.sqrt((test[0]-t[0])*(test[0]-t[0]) + (test[1]-t[1])*(test[1]-t[1]))
-                test = snake[counter][len(snake[counter])-1]
-                if dis <= math.sqrt(2) + 0.1: # prevent any weird rounding error
-                    counter += 1
-            not_caught -= 1
+                    
+                if snake_len - not_caught == counter:
+                    front_dis = math.sqrt((front[0]-t[0])*(front[0]-t[0]) + (front[1]-t[1])*(front[1]-t[1]))
+                    if front_dis <= math.sqrt(2):
+                        front = snake[not_caught - 1][len(snake[counter - 1])-1]
+                        not_caught -= 1
+                        counter = 0
+                        continue
+                if counter == snake_len - not_caught:
+                    counter = 0
+                    continue
+                counter += 1
+            else:
+                not_caught -= 1
+
     return len(snake[snake_len - 1])
 print(follow_tail(1))
-print(follow_tail(9))
+#print(follow_tail(9))
