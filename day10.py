@@ -14,8 +14,6 @@ def check_signal(loop, x):
 def draw(loop, x):
     to_append = ""
     loop = (loop % 40)
-    # if loop == 0:
-    #     loop = 40
     test = x-loop
     if test >= -2 and test <= 0:
         to_append += "#" 
@@ -26,8 +24,7 @@ def draw(loop, x):
         to_append += "\n"
     return to_append
     
-    
-        
+       
 strength = 0
 loop = 0
 x = 1
@@ -48,5 +45,3 @@ for cycle in circuit:
         x += int(cycle[1])
 print(crt)
 print(strength)
-
-        
