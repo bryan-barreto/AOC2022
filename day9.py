@@ -88,7 +88,7 @@ def follow_tail(snake_len):
                 h = (h[0] - h_dis,h[1])
             case "R":
                 h = (h[0] + h_dis,h[1])
-            case "U":
+            case "U": 
                 h = (h[0],h[1]+ h_dis)
             case "D":
                 h = (h[0],h[1]- h_dis)
