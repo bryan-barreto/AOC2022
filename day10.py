@@ -11,18 +11,18 @@ def check_signal(loop, x):
         return (loop * x)
     return 0
 
-def draw(inner_loop, inner_x):
+def draw(loop, x):
     to_append = ""
-    inner_loop = (inner_loop % 40)
-    if inner_loop == 0:
-        inner_loop = 40
-    test = inner_x-inner_loop
-    if test >= -1 and test <= 1:
+    loop = (loop % 40)
+    # if loop == 0:
+    #     loop = 40
+    test = x-loop
+    if test >= -2 and test <= 0:
         to_append += "#" 
     else:
         to_append += "."
     
-    if inner_loop == 40:
+    if loop% 40 == 0 :
         to_append += "\n"
     return to_append
     
@@ -35,14 +35,14 @@ crt = ""
 for cycle in circuit:
     cycle = cycle.split()
     if cycle[0] == "noop":
-        crt += draw(loop, x)
         loop += 1
+        crt += draw(loop, x)
         strength += check_signal(loop, x)
     if cycle[0] == "addx":
         counter = 0
         while counter < 2:
-            crt += draw(loop, x)
             loop += 1
+            crt += draw(loop, x)
             counter += 1 
             strength += check_signal(loop, x)
         x += int(cycle[1])
