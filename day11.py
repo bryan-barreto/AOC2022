@@ -32,9 +32,9 @@ class Monkey():
             if self.operation[1] == "+":
                 old = int((x+y) % worry)
 
-            self.throw(old)
+            self._throw(old)
         
-    def throw(self, old):
+    def _throw(self, old):
         test = old % self.test
         if test == 0:
             monkeys[self.true_to].catch(old)

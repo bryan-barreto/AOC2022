@@ -17,7 +17,7 @@ for x in list:
                 elf_2 += "00" + str(small_range) + "."
             small_range += 1
         is_first_elf = False
-    if elf_1.__contains__(elf_2) or elf_2.__contains__(elf_1): 
+    if elf_1 in elf_2 or elf_2 in elf_1: 
         counter += 1
     print(elf_1 + "\n" + elf_2)
     

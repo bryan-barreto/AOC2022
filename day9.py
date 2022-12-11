@@ -111,7 +111,7 @@ def follow_tail(snake_len):
                     t = (t[0], t[1] + 1)
                 if test[1] < t[1]:
                     t = (t[0], t[1] - 1)
-                if not snake[counter].__contains__(t):
+                if t not in snake[counter]:
                     snake[counter].append(t)
                 else:
                     hold = snake[counter][snake[counter].index(t)]
