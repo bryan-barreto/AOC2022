@@ -5,7 +5,6 @@ monkey_list = open("problems/day11.txt").read().split("\n\n")
 class Monkey():
     def __init__(self, monkey) -> None:
         self.number = re.search("Monkey (\d+)", monkey).group(1)
-        # items = self.get_list(monkey)
         self.items =  re.search("Starting items: (.+)", monkey).group(1).split(", ")
         self.operation = re.search("Operation: new = (.+) (.) (.+)", monkey).groups()
         self.test = int(re.search("Test: divisible by (.+)", monkey).group(1))
@@ -32,7 +31,6 @@ class Monkey():
                 old = int((x*y) % worry)
             if self.operation[1] == "+":
                 old = int((x+y) % worry)
-
         
             self.throw(monkeys, old)
         
