@@ -5,7 +5,7 @@ class Step():
         self.location = location
         self.height = height
         self.path = path
-        self.huer = len(path) + find_dist(location, goal)
+        self.huer = find_dist(location, goal)
         
     def get_location(self):
         return self.location
@@ -32,41 +32,48 @@ def find_pos(pos):
 def find_dist(x,y):
     return abs(x[0]-y[0]) + abs(x[1]-y[1])
 
-def check_fringe(fringe, testing):
-    for not_here in fringe:
-        if not_here.test_previous(testing):
-            return True
+def have_i(been_there, testing):
+    return testing in been_there
+
 
 def part1():
     counter = 0
     goal = find_pos('E')
     fringe = [Step(find_pos('S'), ord('a')-1, [], goal)]
+    been_there = []
     while 1 > 0:
         counter +=1
-        # if counter % 100 == 0:
-        #     print(len(fringe))
+        if counter % 100 == 0:
+            print(len(fringe))
         step = fringe.pop(0)
+        
         step_location = step.get_location() 
         for test in (-1,0), (1,0), (0, -1), (0,1):
+            # if step.get_height() >= ord('s'):
+            #     pass
             test = (step_location[0] + test[0], step_location[1] + test[1])
             if test[0] >= len(full_map[0]) or test[0] < 0 or test[1] >= len(full_map) or test[1] < 0:
                 continue
             new_height = ord('z')+1 if full_map[test[1]][test[0]] == 'E' else ord(full_map[test[1]][test[0]])
-            if check_fringe(fringe, test):
+            # if new_height >= ord('t'):
+            #     pass
+            if have_i(been_there, test):
                 continue               
-            if new_height - 1 != step.get_height() and new_height != step.get_height() and new_height + 1 != step.get_height():
+            if new_height - 1 > step.get_height():
                 continue
-            if new_height == ord('z') + 1:
+            if test == goal:         
                 to_print = step.get_path().copy()
                 to_print.append(step.get_location())
                 print(to_print)
                 return len(to_print)
-            if step.test_previous(test):
-                continue
+            
+            # if step.test_previous(test):
+            #     continue
             path = step.get_path().copy()
             path.append(step.get_location())
             fringe.append(Step(test, new_height, path, goal))
+            been_there.append(test)
         # fringe.sort(key = lambda x : x.height, reverse=True)
-        fringe.sort(key = lambda x : x.huer)
+        # fringe.sort(key = lambda x : x.huer)
 
 print(part1())
