@@ -42,9 +42,9 @@ def cmp(left,right):
         x = left[counter]
         y = right[counter]
         if type(x) == list or type(y) == list:
-            if type(x) == list and not type(y) == list:
+            if type(y) != list:
                 y = [y]
-            if type(y) == list and not type(x) == list:
+            if type(x) != list:
                 x = [x]
             check = cmp(x,y)
             if check == 0:

@@ -48,14 +48,14 @@ def part1():
         step = fringe.pop(0)
         
         step_location = step.get_location() 
-        for test in (-1,0), (1,0), (0, -1), (0,1):
+        for test in (-1,0), (1,0), (0,1), (0, -1):
             # if step.get_height() >= ord('s'):
             #     pass
             test = (step_location[0] + test[0], step_location[1] + test[1])
             if test[0] >= len(full_map[0]) or test[0] < 0 or test[1] >= len(full_map) or test[1] < 0:
                 continue
             new_height = ord('z')+1 if full_map[test[1]][test[0]] == 'E' else ord(full_map[test[1]][test[0]])
-            # if new_height >= ord('t'):
+            # if new_height >= ord('z'):
             #     pass
             if have_i(been_there, test):
                 continue               
