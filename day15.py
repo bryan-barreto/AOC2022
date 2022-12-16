@@ -7,26 +7,39 @@ class Sensor():
         hold = re.search("closest beacon is at x=(.+), y=(.+)", input).groups()
         self.beacon = (int(hold[0]), int(hold[1]))
         self.distance = abs(self.position[0] - self.beacon[0]) + abs(self.position[1] - self.beacon[1])
-        self.edge = [self.position]
-        self.full_signal = []
+        self.edge = []
     
     def find_beacon(self):
         hold = []
-        beacon_reached = False
-        while not beacon_reached:
-            while len(self.edge) > 0:
-                x = self.edge.pop(0)
-                self.full_signal.append(x)
-                for test in (-1,0),(1,0),(0,-1),(0,1):
-                    test = (test[0] + x[0], test[1] + x[1])
-                    if test in hold or test in self.edge or test in self.full_signal:
-                        continue
-                    if test == self.beacon:
-                        beacon_reached = True
-                    hold.append(test)
-            self.edge = hold
-        self.edge = []
-    
+        counter = 0
+        distance = self.distance
+        while counter <= distance:
+            hold.append((self.position[0] + counter, self.position[1] + distance))
+            hold.append((self.position[0] + counter, self.position[1] - distance))
+            hold.append((self.position[0] - counter, self.position[1] + distance))
+            hold.append((self.position[0] - counter, self.position[1] - distance))
+            hold.append((self.position[0] + distance, self.position[1] + counter))
+            hold.append((self.position[0] + distance, self.position[1] - counter))
+            hold.append((self.position[0] - distance, self.position[1] + counter))
+            hold.append((self.position[0] - distance, self.position[1] - counter))
+            counter += 1
+            distance -= 1
+        hold.sort()
+        for x in hold:
+            if x not in self.edge:
+                self.edge.append(x)
+        # hold = self.full_signal.copy()
+        # while len(hold) > 1:
+        #     val1 = hold.pop(0)
+        #     if val1[0] != hold[0][0]:
+        #         continue
+        #     val2 = hold.pop(0)
+        #     between = abs(val1[1] - val2[1]) - 1
+        #     while between > 0:
+        #         self.full_signal.append((val1[0], val1[1] + between))
+        #         between -= 1
+                
+
     def beacon_at_y(self, y):
         if self.beacon[1] == y:
             return self.beacon
@@ -34,12 +47,12 @@ class Sensor():
     
     def return_column(self, y):
         hold = []
-        for x in self.full_signal:
+        for x in self.edge:
             if x[1] == y:
                 hold.append(x)
         return hold
         
-full_list = open("problems/day15.txt").read().split("\n")
+full_list = open("problems/day15ex.txt").read().split("\n")
 
 def part1():
     sensor_list = []
@@ -49,14 +62,15 @@ def part1():
         sensor_list.append(sensor)
     column = []
     beacons_at_column = []
-    y=2000000
+    # y=2000000
+    y=10
     for x in sensor_list:
         column_array = x.return_column(y)   
         for move in column_array:
             if move not in column:
                 column.append(move)
         beacon = x.beacon_at_y(y)
-        if beacon != None:
+        if beacon != None and beacon not in beacons_at_column:
             beacons_at_column.append(beacon)
     print(len(column) - len(beacons_at_column))
     
