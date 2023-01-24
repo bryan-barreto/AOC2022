@@ -68,8 +68,7 @@ class Rock():
             shift = (shift[0], shift[1] - 1)
             self.pos.append(shift)
             counter += 1
-            
-            
+                     
     def rest(self):
         return self.pos
 
@@ -78,31 +77,50 @@ rocks = []
 for part in rocks_list:
     rocks.append(Rock(part))
 
-grid = []
-height = 0
-counter = 0
-rock = 0
-while rock < 1000000000000:
-    current_rock = rocks[rock%5]
-    current_rock.draw(height)
-    loop = True
-    while loop:
-        move = move_list[counter]
-        if move == '<':
-            current_rock.moveleft(grid)
-        else:
-            current_rock.moveright(grid)
-        counter += 1
-        if counter >= len(move_list):
-            counter = 0
-        if not current_rock.canfall(grid):
-            setting = current_rock.rest()
-            for rest in setting:
-                grid.append(rest)
-            loop = False
-            continue
-        current_rock.movedown()
-    grid.sort(key = lambda x : x[1], reverse=True)
-    height = grid[0][1]
-    rock += 1
-print(height)
+def play(drops):
+    grid = []
+    loop_heights = []
+    height = 0
+    counter = 0
+    total_counter = 0
+    rock = 0
+    while rock < drops:
+        current_rock = rocks[rock%5]
+        current_rock.draw(height)
+        loop = True
+        while loop:
+            move = move_list[counter]
+            if move == '<':
+                current_rock.moveleft(grid)
+            else:
+                current_rock.moveright(grid)
+            counter += 1
+            total_counter += 1
+            if drops % 100000 == total_counter:
+                print(total_counter/drops)
+
+            if counter >= len(move_list):
+                counter = 0
+                if len(loop_heights) == 0:
+                    loop_heights.append((height, total_counter))
+                else:
+                    for x in loop_heights:
+                        if height % x[0] == 0:
+                            return (drops/x[1]) * x[0]
+                    loop_heights.append((height, total_counter))
+                            
+            if not current_rock.canfall(grid):
+                setting = current_rock.rest()
+                for rest in setting:
+                    grid.append(rest)
+                loop = False
+                continue
+            current_rock.movedown()
+        grid.sort(key = lambda x : x[1], reverse=True)
+        height = grid[0][1]
+        while height > grid[len(grid) - 1][1] + 100:
+            grid.pop()
+        rock += 1
+    return height
+
+print(play(1000000000000))
