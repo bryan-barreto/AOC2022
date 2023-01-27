@@ -1,5 +1,5 @@
 rocks_list = open("problems/day17rocks.txt").read().split("\n\n")
-move_list = open("problems/day17.txt").read()
+move_list = open("problems/day17ex.txt").read()
 
 class Rock():
     def __init__(self, input) -> None:
@@ -71,7 +71,34 @@ class Rock():
                      
     def rest(self):
         return self.pos
+    
+    def full_shift(self, old_height, new_height):
+        new_pos = []
+        for x in self.pos:
+            difference = old_height - x[1]
+            new_pos.append((x[0], new_height + difference))
+        self.pos = new_pos
 
+
+def find_visible(list, height):
+    test_height = height + 1
+    return_list = []
+    past = []
+    fringe = [(0, test_height)]
+    while len(fringe) > 0:
+        test_loc = fringe.pop()
+        past.append(test_loc)
+        for x in (1,0), (0,-1), (-1,0):
+            new_loc = (test_loc[0] + x[0], test_loc[1] + x[1])
+            if new_loc[0] < -2 or new_loc[0] > 4:
+                continue
+            if (new_loc not in list and 
+                new_loc not in fringe and 
+                new_loc not in past):
+                fringe.append(new_loc)
+            elif new_loc in list:
+                return_list.append(new_loc)
+    return return_list
 
 rocks = []       
 for part in rocks_list:
@@ -79,16 +106,18 @@ for part in rocks_list:
 
 def play(drops):
     grid = []
-    loop_heights = []
     height = 0
+    first_height = 0
     counter = 0
     total_counter = 0
     rock = 0
+    wind_loops = 0
     while rock < drops:
         current_rock = rocks[rock%5]
         current_rock.draw(height)
         loop = True
-        while loop:
+        rock += 1
+        while loop: 
             move = move_list[counter]
             if move == '<':
                 current_rock.moveleft(grid)
@@ -96,19 +125,29 @@ def play(drops):
                 current_rock.moveright(grid)
             counter += 1
             total_counter += 1
-            if drops % 100000 == total_counter:
-                print(total_counter/drops)
+            # if total_counter % 1_000_000 == 0:
+            #     print(float(total_counter / drops))
+            if counter == len(move_list):
+                if wind_loops == 1:
+                    last_height = height - first_height
+                    last_rocks = rock - first_rocks
+                    multi = int(drops/last_rocks) - 1
+                    rock = drops - (drops%last_rocks)
+                    visible = find_visible(grid, height)
+                    visible.sort(key = lambda x : x[1], reverse=True)
+                    new_height = first_height + (last_height * multi)
+                    for x in visible:
+                        difference = visible[0][1] - x[1]
+                        grid.append((x[0], new_height - difference))
+                    current_rock.full_shift(visible[0][1], new_height)
+                    height = new_height 
+                first_height = height
+                first_rocks = rock
 
+            
             if counter >= len(move_list):
                 counter = 0
-                if len(loop_heights) == 0:
-                    loop_heights.append((height, total_counter))
-                else:
-                    for x in loop_heights:
-                        if height % x[0] == 0:
-                            return (drops/x[1]) * x[0]
-                    loop_heights.append((height, total_counter))
-                            
+                
             if not current_rock.canfall(grid):
                 setting = current_rock.rest()
                 for rest in setting:
@@ -116,11 +155,20 @@ def play(drops):
                 loop = False
                 continue
             current_rock.movedown()
+
         grid.sort(key = lambda x : x[1], reverse=True)
         height = grid[0][1]
         while height > grid[len(grid) - 1][1] + 100:
             grid.pop()
-        rock += 1
+        # if rock%5 == 0:
+        #     if len(loop_heights) == 0:
+        #         loop_heights.append((height, total_counter))
+        #     else:
+        #         for x in loop_heights:
+        #             if height % x[0] == 0:
+        #                 return (drops/x[1]) * x[0]
+        #         loop_heights.append((height, total_counter))
+        
     return height
 
-print(play(1000000000000))
+print(play(1_000_000_000_000))
