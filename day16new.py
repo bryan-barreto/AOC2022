@@ -15,45 +15,40 @@ class Valve():
     def __eq__ (self, other):
         return self.valve == other
 
-def move(valves, current_room, current_timer, flow_rate, score, turned_valves):
+def move(valves, current_room, current_timer, flow_rate, turned_valves, best_route):
     if current_timer > TIMER:
-        if score > highest_score:
-            highest_score = score
-        return 
+        pass
     current_timer += 1
-    score += flow_rate
     if flow_rate < max_flow:
         for room in valves[valves.index(current_room)].tunnels_to:
-            turn(valves, room, current_timer, flow_rate, score, turned_valves.copy())  
-            move(valves, room, current_timer, flow_rate, score, turned_valves.copy())
+            first_route = best_route.copy()
+            second_route = best_route.copy()
+            first_route.append(turn(valves, room, current_timer, flow_rate, turned_valves.copy(), best_route=best_route))
+            second_route.append(move(valves, room, current_timer, flow_rate, turned_valves.copy(), best_route=best_route))
+            
     else:
-        move(valves, current_room, current_timer, flow_rate, score, turned_valves.copy())
+        move(valves, current_room, current_timer, flow_rate, turned_valves.copy(), best_route=best_route)
                  
 
-def turn(valves, current_room, current_timer, flow_rate, score, turned_valves):
+def turn(valves, current_room, current_timer, flow_rate, turned_valves, best_route):
     if current_timer > TIMER:
-        if score > highest_score:
-            highest_score = score
-        return
+        pass
     current_timer += 1
-    score += flow_rate
+    score += flow_rate * (TIMER - current_timer)
     current_valve = valves[valves.index(current_room)]
     if current_room not in turned_valves and current_valve.flow_rate != 0:  
         flow_rate += current_valve.flow_rate
         turned_valves.append(current_room)
-    move(valves, current_room, current_timer, flow_rate, score, turned_valves.copy())
+    move(valves, current_room, current_timer, flow_rate, turned_valves.copy(), best_route=best_route)
 
 def part1(): 
-    current_timer = 0
-    current_room = 'AA'
-    score = 0
-    flow_rate = 0
     valves = []
-    highest_score = 0
+    best_route = []
+
     while len(full_list) > 0:
         valves.append(Valve(full_list.pop(0)))
         
-    move(valves, current_room, current_timer, flow_rate, score, turned_valves=[])
+    best_route.append(move(valves=valves, current_room='AA', current_timer=0, flow_rate=0, turned_valves=[], best_route=best_route))
     
-    print(highest_score)      
+
 part1()
